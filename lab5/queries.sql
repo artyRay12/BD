@@ -57,12 +57,57 @@ COMMIT;
 
 
 -- 7. Найти все "пересекающиеся" варианты проживания.
-SELECT r_x_b.id_booking, COUNT(*)
-FROM room_in_booking r_x_b
-LEFT JOIN room AS r ON r.id_room = r_x_b.id_room
-LEFT JOIN hotel AS h ON h.id_hotel = r.id_hotel
-LEFT JOIN room_category AS r_x_c ON r.id_room_category = r_x_c.id_room_category
-group by r_x_b.id_room_in_booking, r_x_b.checkin_date
+SELECT
+	tab1.id_room_in_booking,
+	tab1.id_booking,
+	tab1.id_room,
+	tab1.checkin_date,
+	tab1.checkout_date,
+	tab2.id_room_in_booking,
+	tab2.id_booking,
+	tab2.id_room,
+	tab2.checkin_date,
+	tab2.checkout_date
+FROM
+	room_in_booking AS tab1
+	JOIN room_in_booking AS tab2 ON (
+		tab1.id_room = tab2.id_room
+		AND tab1.id_booking <> tab2.id_booking
+		AND tab1.checkin_date BETWEEN tab2.checkin_date AND tab2.checkout_date
+	);
+    
+
+
+-- 8 Создать бронирование в транзакции
+START TRANSACTION;
+
+INSERT INTO client (name, phone) 
+VALUES ("Freddie Mercury", "7 927 122 12 32");
+
+INSERT INTO booking (id_client, booking_date) 
+VALUES (
+	(SELECT c.name, c.phone
+		FROM client as C
+		ORDER BY id DESC LIMIT 1
+    ), NOW());
+
+INSERT INTO room_in_booking (id_booking, id_room, checkin_date, checkout_date) 
+VALUES (
+	(SELECT b.id_booking 
+		FROM booking AS b
+        ORDER BY id DESC LIMIT 1
+	), 12, '2020-05-12', '2020-05-024'
+);
+    
+ROLLBACK;
+COMMIT;
+
+-- 9. Добавить необходимые индексы для всех таблиц.
+CREATE INDEX client_name_ind ON client(name);
+CREATE INDEX booking_client_ind ON booking(id_client);
+CREATE INDEX room_in_booking_ind ON room_in_booking_ind(id_room_in_booking);
+CREATE INDEX room_id_hotel_ind ON room(id_hotel);
+CREATE INDEX hotel_name_ind ON hotel(name ASC);
 
 
 
