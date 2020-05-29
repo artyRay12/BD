@@ -48,19 +48,19 @@ WHERE YEAR(birth) = YEAR('1940-10-09');
 SELECT d.name, MIN(date) 
 FROM receipt AS rec
 INNER JOIN disease AS d ON rec.id_disease = d.id_disease
-GROUP BY rec.id_disease;
+GROUP BY d.name;
 
 #Определить когда был последний больной по всем болезням
 SELECT d.name, MAX(date) 
 FROM receipt AS rec
 INNER JOIN disease AS d ON rec.id_disease = d.id_disease
-GROUP BY rec.id_disease;
+GROUP BY d.name;
 
 #Количество израсходованного лекарства
 SELECT d.name, SUM(amount) 
 FROM drug_x_receipt AS dxr
 INNER JOIN drug AS d ON d.id_drug = dxr.id_drug
-GROUP BY dxr.id_drug;
+GROUP BY d.name;
 
 #средний возраст пациента по болезням 
 
@@ -68,7 +68,7 @@ GROUP BY dxr.id_drug;
 SELECT d.name, COUNT(rec.id_disease) as count
 FROM receipt as rec
 LEFT JOIN disease AS d ON rec.id_disease = d.id_disease
-GROUP BY rec.id_disease;
+GROUP BY d.name;
 
 # 9 - JOIN
 #По имени и фамилии определить какими болезнями болел человек
@@ -116,9 +116,11 @@ WHERE r.id_disease = (
     
 -- Показать лекарства от конкретного производителя
 SELECT d.name
-FROM drug AS d
-LEFT JOIN drug_x_drugdealer AS dxd ON dxd.id_drug = d.id_drug
-LEFT JOIN drug_dealer AS dd ON dd.id_drug_dealer = dxd.id_drug_dealer
+FROM (
+	drug AS d
+	LEFT JOIN drug_x_drugdealer AS dxd ON dxd.id_drug = d.id_drug
+	LEFT JOIN drug_dealer AS dd ON dd.id_drug_dealer = dxd.id_drug_dealer
+)
 WHERE dd.name IN('Pablo Escobar');
     
     

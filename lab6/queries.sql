@@ -11,14 +11,15 @@ WHERE m.name = "Кордерон" AND c.name = "Аргус";
 
 -- 3. Дать список лекарств компании “Фарма”, на которые не были сделаны заказы
 -- до 25 января.
-SELECT m.name
-FROM medicine AS m
-WHERE m.name NOT IN (SELECT DISTINCT(m.name)
+SELECT c.name, m.name
+FROM production AS p
+LEFT JOIN medicine AS m ON m.id_medicine = p.id_medicine
+LEFT JOIN company AS c on c.id_company = p.id_company
+WHERE m.name NOT IN (
+	SELECT DISTINCT(o.id_production)
 	FROM orderr AS o
-	LEFT JOIN production AS p ON p.id_production = o.id_production
-    LEFT JOIN company AS c ON c.id_company = p.id_company
-	LEFT JOIN medicine AS m ON m.id_medicine = p.id_medicine
-	WHERE c.name = "Фарма" AND o.date < "2019-01-25");
+	WHERE o.date < "2019-01-25") AND c.name = "Фарма";
+    
     
 -- 4. Дать минимальный и максимальный баллы лекарств каждой фирмы, которая
 -- оформила не менее 120 заказов.
