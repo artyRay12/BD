@@ -137,15 +137,11 @@ START TRANSACTION;
 INSERT INTO client (name, phone) 
 VALUES ("Freddie Mercury", "7 927 122 12 32");
 
-SELECT *
-FROM client
-WHERE id_client = last_insert_id();
-
 INSERT INTO booking (id_client, booking_date) 
 VALUES (
 	(SELECT c.name, c.phone
 		FROM client as C
-		ORDER BY id DESC LIMIT 1
+		WHERE id_client = LAST_INSERT_ID()
     ), NOW());
 
 INSERT INTO room_in_booking (id_booking, id_room, checkin_date, checkout_date) 
