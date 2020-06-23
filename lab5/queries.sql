@@ -129,13 +129,17 @@ FROM
 		AND tab1.checkin_date BETWEEN tab2.checkin_date AND tab2.checkout_date
 	);
     
-
-
 -- 8 Создать бронирование в транзакции
+
 START TRANSACTION;
+-- SCOPE_IDENTITY
 
 INSERT INTO client (name, phone) 
 VALUES ("Freddie Mercury", "7 927 122 12 32");
+
+SELECT *
+FROM client
+WHERE id_client = last_insert_id();
 
 INSERT INTO booking (id_client, booking_date) 
 VALUES (
