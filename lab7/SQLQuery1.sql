@@ -1,5 +1,5 @@
---2. Выдать оценки студентов по информатике если они обучаются данному
--- предмету. Оформить выдачу данных с использованием view
+п»ї--2. Р’С‹РґР°С‚СЊ РѕС†РµРЅРєРё СЃС‚СѓРґРµРЅС‚РѕРІ РїРѕ РёРЅС„РѕСЂРјР°С‚РёРєРµ РµСЃР»Рё РѕРЅРё РѕР±СѓС‡Р°СЋС‚СЃСЏ РґР°РЅРЅРѕРјСѓ
+-- РїСЂРµРґРјРµС‚Сѓ. РћС„РѕСЂРјРёС‚СЊ РІС‹РґР°С‡Сѓ РґР°РЅРЅС‹С… СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј view
 DROP VIEW IF EXISTS university.informatics_grades
 GO
 
@@ -9,17 +9,17 @@ FROM lesson AS l
 LEFT JOIN subject AS sub ON sub.id_subject = l.id_subject
 LEFT JOIN mark AS m ON m.id_lesson = l.id_lesson
 LEFT JOIN student AS st ON st.id_student = m.id_student
-WHERE sub.name = 'информатика'
+WHERE sub.name = 'РёРЅС„РѕСЂРјР°С‚РёРєР°'
 GROUP BY st.id_student, st.name
 GO
 
 SELECT * FROM informatics_grades;
 
 
---3. Дать информацию о должниках с указанием фамилии студента и названия
--- предмета. Должниками считаются студенты, не имеющие оценки по предмету,
--- который ведется в группе. Оформить в виде процедуры, на входе
--- идентификатор группы.
+--3. Р”Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРѕР»Р¶РЅРёРєР°С… СЃ СѓРєР°Р·Р°РЅРёРµРј С„Р°РјРёР»РёРё СЃС‚СѓРґРµРЅС‚Р° Рё РЅР°Р·РІР°РЅРёСЏ
+-- РїСЂРµРґРјРµС‚Р°. Р”РѕР»Р¶РЅРёРєР°РјРё СЃС‡РёС‚Р°СЋС‚СЃСЏ СЃС‚СѓРґРµРЅС‚С‹, РЅРµ РёРјРµСЋС‰РёРµ РѕС†РµРЅРєРё РїРѕ РїСЂРµРґРјРµС‚Сѓ,
+-- РєРѕС‚РѕСЂС‹Р№ РІРµРґРµС‚СЃСЏ РІ РіСЂСѓРїРїРµ. РћС„РѕСЂРјРёС‚СЊ РІ РІРёРґРµ РїСЂРѕС†РµРґСѓСЂС‹, РЅР° РІС…РѕРґРµ
+-- РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂСѓРїРїС‹.
 CREATE PROCEDURE students_with_study_debts 
 	@id_group AS INT
 AS
@@ -40,8 +40,8 @@ GO
 
 EXECUTE students_with_study_debts @id_group=3
 
---4. Дать среднюю оценку студентов по каждому предмету для тех предметов, по
---   которым занимается не менее 35 студентов.
+--4. Р”Р°С‚СЊ СЃСЂРµРґРЅСЋСЋ РѕС†РµРЅРєСѓ СЃС‚СѓРґРµРЅС‚РѕРІ РїРѕ РєР°Р¶РґРѕРјСѓ РїСЂРµРґРјРµС‚Сѓ РґР»СЏ С‚РµС… РїСЂРµРґРјРµС‚РѕРІ, РїРѕ
+--   РєРѕС‚РѕСЂС‹Рј Р·Р°РЅРёРјР°РµС‚СЃСЏ РЅРµ РјРµРЅРµРµ 35 СЃС‚СѓРґРµРЅС‚РѕРІ.
 
 SELECT s.name, avg_marks.avg
 FROM(SELECT l.id_subject, AVG(m.mark) as avg
@@ -54,32 +54,32 @@ LEFT JOIN subject AS s ON s.id_subject = avg_marks.id_subject
 	
 	
 
--- 5 Дать оценки студентов специальности ВМ по всем проводимым предметам с
---указанием группы, фамилии, предмета, даты. При отсутствии оценки заполнить
---значениями NULL поля оценки.
+-- 5 Р”Р°С‚СЊ РѕС†РµРЅРєРё СЃС‚СѓРґРµРЅС‚РѕРІ СЃРїРµС†РёР°Р»СЊРЅРѕСЃС‚Рё Р’Рњ РїРѕ РІСЃРµРј РїСЂРѕРІРѕРґРёРјС‹Рј РїСЂРµРґРјРµС‚Р°Рј СЃ
+--СѓРєР°Р·Р°РЅРёРµРј РіСЂСѓРїРїС‹, С„Р°РјРёР»РёРё, РїСЂРµРґРјРµС‚Р°, РґР°С‚С‹. РџСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё РѕС†РµРЅРєРё Р·Р°РїРѕР»РЅРёС‚СЊ
+--Р·РЅР°С‡РµРЅРёСЏРјРё NULL РїРѕР»СЏ РѕС†РµРЅРєРё.
 SELECT g.name, st.name, s.name, m.mark, l.date--STRING_AGG(m.mark, ',') AS 'marks'
 FROM student AS st
 LEFT JOIN [group] AS g ON g.id_group = st.id_group
 LEFT JOIN mark AS m ON m.id_student = st.id_student
 LEFT JOIN lesson AS l ON l.id_lesson = m.id_lesson
 LEFT JOIN [subject] AS s ON s.id_subject = l.id_subject
-WHERE g.name = 'ВМ'
+WHERE g.name = 'Р’Рњ'
 ORDER BY st.name, s.name, l.date;
 
 
---6 Всем студентам специальности ПС, получившим оценки меньшие 5 по предмету
--- БД до 12.05, повысить эти оценки на 1 балл.
+--6 Р’СЃРµРј СЃС‚СѓРґРµРЅС‚Р°Рј СЃРїРµС†РёР°Р»СЊРЅРѕСЃС‚Рё РџРЎ, РїРѕР»СѓС‡РёРІС€РёРј РѕС†РµРЅРєРё РјРµРЅСЊС€РёРµ 5 РїРѕ РїСЂРµРґРјРµС‚Сѓ
+-- Р‘Р” РґРѕ 12.05, РїРѕРІС‹СЃРёС‚СЊ СЌС‚Рё РѕС†РµРЅРєРё РЅР° 1 Р±Р°Р»Р».
 SELECT st.name, s.name, m.mark, l.date
 FROM student AS st
 LEFT JOIN [group] AS g ON g.id_group = st.id_group
 LEFT JOIN mark AS m ON m.id_student = st.id_student
 LEFT JOIN lesson AS l ON l.id_lesson = m.id_lesson
 LEFT JOIN [subject] AS s ON s.id_subject = l.id_subject
-WHERE g.name = 'ПС' AND s.name = 'БД' AND l.date < '2019-05-12' AND m.mark < 5
+WHERE g.name = 'РџРЎ' AND s.name = 'Р‘Р”' AND l.date < '2019-05-12' AND m.mark < 5
 --ORDER BY st.name, s.name, l.date
 
 
--- 7 Индексы
+-- 7 РРЅРґРµРєСЃС‹
 CREATE NONCLUSTERED INDEX [subject_name_IND]
 ON subject (name)
 
