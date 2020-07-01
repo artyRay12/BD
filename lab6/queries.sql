@@ -81,7 +81,7 @@ WHERE c.id_company IN (
 	FROM `order` AS o
 	LEFT JOIN production AS p ON p.id_production = o.id_production
 	GROUP BY c.id_company
-    HAVING COUNT(c.name) >= 120)
+    HAVING COUNT(id_company) >= 120)
 GROUP BY c.name;
 
 
